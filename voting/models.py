@@ -29,4 +29,4 @@ class SerialNumber(models.Model):
 
 class Vote(models.Model):
     serial_number = models.ForeignKey(SerialNumber, on_delete=models.CASCADE)
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, related_name='vote', on_delete=models.CASCADE)
