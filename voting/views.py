@@ -71,3 +71,23 @@ def update_vote_view(request, question_id: int, format=None):
             return Response({"detail": "Malformated input"}, status.HTTP_400_BAD_REQUEST)
         except AssertionError as e:
             return Response({"detail": str(e)}, status.HTTP_400_BAD_REQUEST)
+
+
+@transaction.atomic
+@api_view(["GET"])
+def get_selected_view(request, serial_number, format=None):
+    if request.method == "GET":
+        try:
+            # Check serial number
+            assert type(serial_number) == str, "Serial number must be string"
+            try:
+                serial_number_obj = SerialNumber.objects.get(serial_number=serial_number)
+            except ObjectDoesNotExist:
+                raise AssertionError("Serial number is not valid")
+
+            result = Vote.objects.filter(serial_number__serial_number=serial_number)\
+                                 .select_related('choice')
+            return Response([{"question": item.choice.question.id,
+                              "choice": item.choice.id} for item in result])
+        except AssertionError as e:
+            return Response({"detail": str(e)}, status.HTTP_400_BAD_REQUEST)
