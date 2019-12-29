@@ -13,7 +13,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     message = models.CharField(max_length=255, null=False)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.message
