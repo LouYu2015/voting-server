@@ -22,3 +22,4 @@ class ChoiceCountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Choice
         fields = ["id", "message", "count"]
+
