@@ -13,7 +13,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ["id", "message", "min_num_chosen", "max_num_chosen", "choices"]
+        fields = ["id", "enable", "message", "min_num_chosen", "max_num_chosen", "choices"]
 
 
 class ChoiceCountSerializer(serializers.ModelSerializer):
