@@ -1,5 +1,9 @@
 # Created by https://www.gitignore.io
 
+# Deployment key
+
+mysite/settings_deploy.py
+
 ### OSX ###
 .DS_Store
 .AppleDouble
