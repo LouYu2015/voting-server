@@ -36,6 +36,9 @@ def update_vote_view(request, question_id: int, format=None):
             except ObjectDoesNotExist:
                 raise AssertionError("Question doesn't exits")
 
+            if not question.enable:
+                raise AssertionError("Question is locked")
+
             # Assert that input is dictionary
             assert type(request.data) == dict, "Input must be dictionary"
 
