@@ -64,7 +64,7 @@ def update_vote_view(request, question_id: int, format=None):
                 "The number of choices is not in range [%d, %d]" % (question.min_num_chosen,
                                                                     question.max_num_chosen)
 
-            Vote.objects.filter(serial_number=serial_number_obj).delete()
+            Vote.objects.filter(serial_number=serial_number_obj, choice__question__id=question_id).delete()
             for id in choices_ids:
                 new_record = Vote(serial_number=serial_number_obj, choice=Choice.objects.get(id=id))
                 new_record.save()
