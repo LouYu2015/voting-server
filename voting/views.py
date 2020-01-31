@@ -97,10 +97,26 @@ def get_selected_view(request, serial_number, format=None):
             return Response({"detail": str(e)}, status.HTTP_400_BAD_REQUEST)
 
 
+def change_serial_number_state(serial_numbers, state):
+    for serial_number in serial_numbers:
+        try:
+            serial_number_obj = SerialNumber.objects.get(serial_number=serial_number)
+            serial_number_obj.enable = state
+            serial_number_obj.save()
+        except ObjectDoesNotExist:
+            SerialNumber(serial_number=serial_number, enable=state).save()
+    return Response({"detail": "success"})
+
+
 @user_passes_test(lambda u: u.is_superuser, login_url='/admin')
 @api_view(["POST"])
-def import_serial_number(request):
+def enable_serial_number(request):
     if request.method == "POST":
-        for serial_number in request.data:
-            SerialNumber(serial_number=serial_number).save()
-        return Response({"detail": "success"})
+        return change_serial_number_state(request.data, True)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin')
+@api_view(["POST"])
+def disable_serial_number(request):
+    if request.method == "POST":
+        return change_serial_number_state(request.data, False)
