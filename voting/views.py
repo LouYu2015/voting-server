@@ -7,6 +7,7 @@ from .serializers import QuestionSerializer, ChoiceCountSerializer
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.contrib.auth.decorators import user_passes_test
 
 
 @api_view(["GET"])
@@ -94,3 +95,12 @@ def get_selected_view(request, serial_number, format=None):
                               "choice": item.choice.id} for item in result])
         except AssertionError as e:
             return Response({"detail": str(e)}, status.HTTP_400_BAD_REQUEST)
+
+
+@user_passes_test(lambda u: u.is_superuser, login_url='/admin')
+@api_view(["POST"])
+def import_serial_number(request):
+    if request.method == "POST":
+        for serial_number in request.data:
+            SerialNumber(serial_number=serial_number).save()
+        return Response({"detail": "success"})
