@@ -51,6 +51,9 @@ def update_vote_view(request, question_id: int, format=None):
             except ObjectDoesNotExist:
                 raise AssertionError("Serial number is not valid")
 
+            if not serial_number_obj.enable:
+                raise AssertionError("Serial number valid but not eligible to vote")
+
             # Check if choices ID are malformated
             choices_ids = request.data["choice_ids"]
             for id in choices_ids:
