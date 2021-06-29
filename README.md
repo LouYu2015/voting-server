@@ -3,7 +3,7 @@
 ## Introduction 简介
 
 This repository contains the server part of UW CSSA's voting website.
-For introduction of the whole project, please see the main project page.
+For introduction of the whole project, please see the [main project page](https://github.com/LouYu2015/voting-website).
 
 This server only exposes a REST API to the client.
 The code doesn't contain a front-end implementation.
@@ -79,6 +79,7 @@ After running the following commands, you should be able to see the management p
 ```bash
 cd voting-server
 python3 manage.py collectstatic
+python3 manage.py makemigrations voting
 python3 manage.py migrate
 python3 manage.py createsuperuser
 python3 manage.py runserver
