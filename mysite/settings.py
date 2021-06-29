@@ -26,7 +26,7 @@ SECRET_KEY = 'p6vxboj(5z7h^4y!1ngz_5j%%!fly47=amvfrkn#c@nusc08)_'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = ["api.vote.cssauw.org"]
 
 # Application definition
 
@@ -82,6 +82,16 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+    # The following template is for Dreamhost deployment
+
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': '',
+    #     'USER': '',
+    #     'PASSWORD': '',
+    #     'HOST': '',
+    #     'PORT': '',
+    # }
 }
 
 
@@ -126,6 +136,6 @@ STATIC_URL = '/static/'
 # Cross origion access
 
 CORS_ORIGIN_WHITELIST = [
-    "https://vote.cssauw.org",
+    # "https://vote.cssauw.org",
     "http://localhost:3000"
 ]
