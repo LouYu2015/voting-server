@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-from .models import Question, Choice, SerialNumber, Vote
+from .models import Question, Choice, SerialNumber, Vote, JudgeVote
 from .serializers import QuestionSerializer, ChoiceCountSerializer
 from django.db.models import Count
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,6 +22,14 @@ def question_list_view(request, format=None):
 def vote_count_view(request, id: int, format=None):
     if request.method == "GET":
         choices = Choice.objects.filter(question__id=id).annotate(count=Count('vote'))
+        serializer = ChoiceCountSerializer(choices, many=True)
+        return Response(serializer.data)
+
+
+@api_view(["GET"])
+def judge_vote_count_view(request, id: int, format=None):
+    if request.method == "GET":
+        choices = Choice.objects.filter(question__id=id).annotate(count=Count('judge_vote'))
         serializer = ChoiceCountSerializer(choices, many=True)
         return Response(serializer.data)
 
@@ -68,9 +76,10 @@ def update_vote_view(request, question_id: int, format=None):
                 "The number of choices is not in range [%d, %d]" % (question.min_num_chosen,
                                                                     question.max_num_chosen)
 
-            Vote.objects.filter(serial_number=serial_number_obj, choice__question__id=question_id).delete()
+            vote_category = JudgeVote if serial_number_obj.is_judge else Vote
+            vote_category.objects.filter(serial_number=serial_number_obj, choice__question__id=question_id).delete()
             for id in choices_ids:
-                new_record = Vote(serial_number=serial_number_obj, choice=Choice.objects.get(id=id))
+                new_record = vote_category(serial_number=serial_number_obj, choice=Choice.objects.get(id=id))
                 new_record.save()
             return Response({"detail": "success"})
 
@@ -94,8 +103,12 @@ def get_selected_view(request, serial_number, format=None):
 
             result = Vote.objects.filter(serial_number__serial_number=serial_number)\
                                  .select_related('choice')
+            judge_result = JudgeVote.objects.filter(serial_number__serial_number=serial_number)\
+                                    .select_related('choice')
             return Response([{"question": item.choice.question.id,
-                              "choice": item.choice.id} for item in result])
+                              "choice": item.choice.id} for item in result] +
+                            [{"question": item.choice.question.id,
+                              "choice": item.choice.id} for item in judge_result])
         except AssertionError as e:
             return Response({"detail": str(e)}, status.HTTP_400_BAD_REQUEST)
 

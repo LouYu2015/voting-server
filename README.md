@@ -60,6 +60,7 @@ You can create an environment with the following commands:
 python3 -m pip install django            
 python3 -m pip install djangorestframework
 python3 -m pip install django-cors-headers
+python3 -m pip install mysqlclient  # For MySQL deployment
 ```
 
 Or use a provided virtual environment (assuming you saved it to `venv/`):

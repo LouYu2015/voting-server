@@ -22,6 +22,7 @@ class Choice(models.Model):
 class SerialNumber(models.Model):
     serial_number = models.CharField(max_length=64, null=False)
     enable = models.BooleanField(default=True)
+    is_judge = models.BooleanField(default=False)
 
     def __str__(self):
         return self.serial_number
@@ -30,3 +31,8 @@ class SerialNumber(models.Model):
 class Vote(models.Model):
     serial_number = models.ForeignKey(SerialNumber, on_delete=models.CASCADE)
     choice = models.ForeignKey(Choice, related_name='vote', on_delete=models.CASCADE)
+
+
+class JudgeVote(models.Model):
+    serial_number = models.ForeignKey(SerialNumber, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, related_name='judge_vote', on_delete=models.CASCADE)
